@@ -242,7 +242,10 @@ def bot_main(function):
     except KeyError:
         discord_webhook_url = 1
 
-    league_id = os.environ["LEAGUE_ID"]
+    try:
+        league_id = os.environ["LEAGUE_ID"]
+    except KeyError:
+        league_id = 1406490
 
     try:
         year = os.environ["LEAGUE_YEAR"]
@@ -363,7 +366,7 @@ if __name__ == '__main__':
         day_of_week='tue', hour=7, minute=30, start_date=ff_start_date, end_date=ff_end_date,
         timezone=myTimezone, replace_existing=True)
     sched.add_job(bot_main, 'cron', ['get_scoreboard_short'], id='scoreboard1',
-        day_of_week='fri,mon', hour=15, minute=15, start_date=ff_start_date, end_date=ff_end_date,
+        day_of_week='fri,mon', hour=16, minute=45, start_date=ff_start_date, end_date=ff_end_date,
         timezone=myTimezone, replace_existing=True)
     sched.add_job(bot_main, 'cron', ['get_scoreboard_short'], id='scoreboard2',
         day_of_week='sun', hour='16,20', start_date=ff_start_date, end_date=ff_end_date,
