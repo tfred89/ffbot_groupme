@@ -226,6 +226,23 @@ def get_trophies(league):
     text = ['Trophies of the week:'] + low_score_str + high_score_str + close_score_str + blowout_str
     return '\n'.join(text)
 
+def skittish(league):
+    skitted = []
+    for w in range(1, pranks_week(league)+1):
+        matchups = league.scoreboard(week=w)
+        score = {}
+        for i in matchups:
+            if i.home_team.team_name not in skitted:
+                score[i.home_team.team_name] = i.home_score
+            if i.away_team.team_name not in skitted:
+                score[i.away_team.team_name] = i.away_score
+        if min(score, key=score.get) not in skitted:
+            skitted.append(min(score, key=score.get))
+    text = 'The poor souls that have not survived the skittish are: '
+    for i in skitted:
+        text += i + ', '
+    return text
+
 def bot_main(function):
     try:
         bot_id = os.environ["BOT_ID"]
@@ -301,6 +318,9 @@ def bot_main(function):
         bot.send_message(text)
         slack_bot.send_message(text)
         discord_bot.send_message(text)
+    elif function=="skittish":
+        text = skittish(league)
+        bot.send_message(text)
     elif function=="get_final":
         text = "Final " + get_scoreboard_short(league, True)
         text = text + "\n\n" + get_trophies(league)
@@ -370,6 +390,9 @@ if __name__ == '__main__':
         timezone=myTimezone, replace_existing=True)
     sched.add_job(bot_main, 'cron', ['get_scoreboard_short'], id='scoreboard2',
         day_of_week='sun', hour='16,20', start_date=ff_start_date, end_date=ff_end_date,
+        timezone=myTimezone, replace_existing=True)
+    sched.add_job(bot_main, 'cron', ['skittish'], id='skittish',
+        day_of_week='tue', hour=21, minute=00, start_date=ff_start_date, end_date=ff_end_date,
         timezone=myTimezone, replace_existing=True)
 
     sched.start()
