@@ -2,6 +2,7 @@ import requests
 import json
 import os
 import random
+
 from apscheduler.schedulers.blocking import BlockingScheduler
 from espnff import League
 
@@ -334,7 +335,6 @@ def bot_main(function):
         try:
             text = os.environ["INIT_MSG"]
             if text != '':
-                bot.send_message(text)
                 slack_bot.send_message(text)
                 discord_bot.send_message(text)
         except KeyError:
@@ -392,7 +392,7 @@ if __name__ == '__main__':
         day_of_week='sun', hour='16,20', start_date=ff_start_date, end_date=ff_end_date,
         timezone=myTimezone, replace_existing=True)
     sched.add_job(bot_main, 'cron', ['skittish'], id='skittish',
-        day_of_week='tue', hour=21, minute=00, start_date=ff_start_date, end_date=ff_end_date,
+        day_of_week='tue', hour=7, minute=45, start_date=ff_start_date, end_date=ff_end_date,
         timezone=myTimezone, replace_existing=True)
 
     sched.start()
